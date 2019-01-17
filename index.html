@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>GoogleBooks検索</title>
+
+<style>
+body {
+  margin: auto;
+  padding: 0;
+  text-align: left;
+  font-size: 16px;
+    width: 900px;
+    height: auto;
+    border: 1px solid #000;
+}
+
+header {
+  background-color: #fff;
+  text-align: center;
+  color: #fff;
+}
+
+main {
+}
+    
+h1{
+    padding: 4px;
+    color: #000;
+}
+    
+    
+h2{
+  font-size:18px;
+}
+
+p {
+  font-size: 100%;
+  text-align: center;
+  border-bottom: 1px solid #fff;
+}
+
+.box{
+    margin: auto;
+    padding-bottom: 10px;
+    width: 600px;
+    border: 1px solid #ccc;
+}
+
+textarea{
+  margin: 3%;
+  width: 30%;
+  height: 40px;
+  font-size:100%;
+  box-shadow: 3px 3px 3px 3px #555;
+}
+</style>
+<script src="jquery-2.1.3.min.js"></script>
+<script>
+$(function () {
+    $("#readbook").on("click",showdata);
+    function showdata () {
+        let query = $("#query").val();
+        
+  //-----------------------------------
+  //getJSON[開始]
+  
+  //大妻女子大学内では以下でお願いします。
+  //$.getJSON("json_data.json", // 又は
+        $.getJSON("http://web.fujimura.com/ko/books.php?q=" + query, 
+  
+  //自宅からは以下で実験して下さい
+  //$.getJSON("https://www.googleapis.com/books/v1/volumes?q=jquery",
+        
+        function (data) {
+            console.log(data);
+
+            let view = ""; //表示文字列を入れる変数
+            for (var i = 0; i < data.items.length; i++){
+                let item = data.items[i];
+                //console.log(s);
+                if(data.items[i].volumeInfo.imageLinks == null){
+                    view += '<div class="box">';
+                    view += '<h2>' + item.volumeInfo.title + '</h2>' + '<p>著者：' + item.volumeInfo.authors + '</p><br>' + "<b>No image</b>";
+                    view += '<p>出版社：' + item.volumeInfo.publisher + '</p>';
+                    view += '<p>出版日：' + item.volumeInfo.publishedDate + '</p>';
+                    view += '</div>';
+                }else{
+                    view += '<div class="box">';
+                    view += '<h2>' + item.volumeInfo.title + '</h2>' + '<p>著者：' + item.volumeInfo.authors + '</p><br>' + "<img src='"+data.items[i].volumeInfo.imageLinks.thumbnail+"'/>";
+                    view += '<p>出版社：' + item.volumeInfo.publisher + '</p>';
+                    view += '<p>出版日：' + item.volumeInfo.publishedDate + '</p>';
+                    view += '</div>';
+                }
+            }
+
+      //変数に入った文字列をを表示
+            $("#content").html(view);
+
+    }); //getJSON[終了]
+
+  //-----------------------------------
+};
+});
+</script>
+</head>
+
+<body>
+
+  <header>
+    <h1>GoogleBooks検索</h1>
+    <p>
+      <input type="text" id="query" value="">
+      <button id="readbook">検索</button>
+    </p>
+  </header>
+
+  <main>
+    <p id="content"></p>
+
+  </main>
+
+</body>
+
+</html>
+
